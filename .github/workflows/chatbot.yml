@@ -3,11 +3,12 @@
     pip install flask openai TTS memory-tool ngrok
 name: Chatbot Deployment
 
-on: 
+on:
   push:
     branches:
       - main
   workflow_dispatch:
+
 
 jobs:
   deploy:

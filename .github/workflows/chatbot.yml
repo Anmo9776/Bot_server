@@ -1,3 +1,6 @@
+- name: Install dependencies
+  run: |
+    pip install flask openai TTS memory-tool ngrok
 name: Chatbot Deployment
 
 on: 

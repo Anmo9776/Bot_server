@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flask openai ngrok
+          pip install flask openai memory-tool ngrok
 
       - name: Start Chatbot Server
         run: |
@@ -34,6 +34,4 @@ jobs:
           sudo apt update && sudo apt install -y ngrok
           ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
           nohup ngrok http 5000 &
-          - name: Display Ngrok URL
-  run: curl -s http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url'
-
+          

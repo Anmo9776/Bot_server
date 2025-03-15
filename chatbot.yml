@@ -1,15 +1,15 @@
-name: Run Chatbot
+name: Chatbot Deployment
 
-on:  
+on: 
   push:
     branches:
       - main
   workflow_dispatch:
 
 jobs:
-  run:
+  deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -17,24 +17,21 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install flask openai tts-api memory-tool ngrok
 
-      - name: Install and authenticate Ngrok
+      - name: Start Chatbot Server
+        run: |
+          nohup python app.py &
+
+      - name: Start Ngrok Tunnel
         run: |
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
           sudo apt update && sudo apt install ngrok
-          ngrok authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
-
-      - name: Start Ngrok Tunnel
-        run: |
-          ngrok http 5000 > /dev/null &
-
-      - name: Run Chatbot Server
-        run: |
-          python app.py
+          ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+          ngrok http 5000 &
           
